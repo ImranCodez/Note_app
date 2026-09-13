@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { toast } from "react-toastify";
 import firebg from "./assets/firebg.jpg";
 
@@ -38,6 +42,11 @@ export default function Register() {
       .then((userCredential) => {
         // Signed up
         const user = userCredential.user;
+        const auth = getAuth();
+        sendEmailVerification(auth.currentUser).then(() => {
+          console.log("emailverfication send hoise");
+        });
+
         toast.success("Signup successfull", {
           autoClose: 3000,
         });
@@ -222,7 +231,7 @@ export default function Register() {
         <button
           onClick={handleRegister}
           disabled={isInvalid}
-          className={`w-full rounded-lg py-3 font-semibold transition hover:bg-blue-300 ${
+          className={`w-full rounded-lg py-3  font-semibold transition hover:bg-blue-300 ${
             isInvalid
               ? "cursor-not-allowed bg-blue-700 text-balck"
               : "bg-blue-500 from-cyan-400 to-violet-500 text-white shadow-lg shadow-violet-950/40 hover:from-cyan-300 hover:to-violet-400"
