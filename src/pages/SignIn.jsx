@@ -1,11 +1,26 @@
 import { useState } from "react";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import firebg from "../assets/firebg.jpg";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formdata, setformdata] = useState({
+    email: "",
+    password: "",
+    errors: "",
+  });
 
+  const hanldlesubmit = (e) => {
+    e.preventDefault();
+
+    if(isLoading) return;
+    if (!formdata.email)return setformdata((prev) => ({ ...prev, errors: "enter your email" }));
+    if (!formdata.password)return setformdata((prev) => ({ ...prev, errors: "enter your password" }));
+  };
+
+  console.log(formdata);
   return (
     <div
       className="relative flex min-h-screen items-center justify-center overflow-hidden bg-cover bg-center px-5 py-10"
@@ -25,8 +40,12 @@ export default function SignIn() {
             Sign in to continue your journey.
           </p>
         </div>
-
-        <form onSubmit={(event) => event.preventDefault()}>
+        {formdata.errors && (
+          <p className="mb-4 rounded-lg border border-red-500 bg-rose-950/50 px-3 py-2 text-center text-sm font-semibold text-rose-200">
+            {formdata.errors}
+          </p>
+        )}
+        <form onSubmit={hanldlesubmit}>
           <div className="mb-4">
             <label
               className="text-sm font-semibold text-indigo-100"
@@ -41,6 +60,10 @@ export default function SignIn() {
                 type="email"
                 className="w-full bg-transparent text-white outline-none placeholder:text-indigo-100/45"
                 placeholder="example@mail.com"
+                value={formdata.email}
+                onChange={(e) =>
+                  setformdata({ ...formdata, email: e.target.value })
+                }
               />
             </div>
           </div>
@@ -67,6 +90,10 @@ export default function SignIn() {
                 type={showPassword ? "text" : "password"}
                 className="w-full bg-transparent text-white outline-none placeholder:text-indigo-100/45"
                 placeholder="Enter your password"
+                value={formdata.password}
+                onChange={(e) =>
+                  setformdata({ ...formdata, password: e.target.value })
+                }
               />
             </div>
           </div>
@@ -96,7 +123,11 @@ export default function SignIn() {
           Don&apos;t have an account?{" "}
           <Link
             to="/register"
-            className="font-semibold text-cyan-300 transition hover:text-cyan-200"
+            className={`font-semibold text-cyan-300 transition hover:text-cyan-200  ${
+              isLoading ?"cursor-not-allowed text-cyan-950 "
+              :
+              "bg-blue-500 from-cyan-400 to-violet-500 text-white shadow-lg shadow-violet-950/40 hover:from-cyan-300 hover:to-violet-400"
+            }`}
           >
             Sign Up
           </Link>

@@ -15,6 +15,7 @@ import {
 } from "firebase/auth";
 import { toast } from "react-toastify";
 import firebg from "../assets/firebg.jpg";
+import { Link } from 'react-router-dom';
 
 export default function Register() {
   const auth = getAuth();
@@ -255,6 +256,10 @@ export default function Register() {
             "Register"
           )}
         </button>
+
+        <div className="text-center mt-1.5">
+          <p>Already have an account? <span className="text-cyan-300 text-[14px]"><Link to="/signin">Sign In</Link></span></p>
+        </div>
       </div>
     </div>
   );
