@@ -14,7 +14,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { toast } from "react-toastify";
-import firebg from "./assets/firebg.jpg";
+import firebg from "../assets/firebg.jpg";
 
 export default function Register() {
   const auth = getAuth();
@@ -64,7 +64,7 @@ export default function Register() {
       });
       await sendEmailVerification(userCredential.user);
 
-      toast.success("Signup successfull", { autoClose: 3000 });
+      toast.success("OTP sent to your email", { autoClose: 3000 });
       setData({
         name: "",
         email: "",
