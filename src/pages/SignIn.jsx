@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
 import firebg from "../assets/firebg.jpg";
 import { Link } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,11 +16,54 @@ export default function SignIn() {
   const hanldlesubmit = (e) => {
     e.preventDefault();
 
-    if(isLoading) return;
-    if (!formdata.email)return setformdata((prev) => ({ ...prev, errors: "enter your email" }));
-    if (!formdata.password)return setformdata((prev) => ({ ...prev, errors: "enter your password" }));
-  };
+    if (isLoading) return;
+    if (!formdata.email)
+      return setformdata((prev) => ({ ...prev, errors: "enter your email" }));
+    if (!formdata.password)
+      return setformdata((prev) => ({
+        ...prev,
+        errors: "enter your password",
+      }));
+    setIsLoading(true);
+    setformdata((prev) => ({ ...prev, errors: "" }));
+    setformdata({
+      email: "",
+      password: "",
+      errors: "",
+    });
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, formdata.email, formdata.password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        if (errorCode === "auth/invalid-email") {
+          setformdata((prev) => ({
+            ...prev,
+            errors: "Please enter a valid email address",
+          }));
+        } else if (errorCode === "auth/user-not-found") {
+          setformdata((prev) => ({
+            ...prev,
+            errors: "No user found with this email address",
+          }));
+        } else if (errorCode === "auth/wrong-password") {
+          setformdata((prev) => ({ ...prev, errors: "Incorrect password" }));
+        } else {
+          setformdata((prev) => ({
+            ...prev,
+            errors: "An error occurred. Please try again.",
+          }));
+        }
 
+        const errorMessage = error.message;
+        console.log(errorMessage)
+      });
+  };
   console.log(formdata);
   return (
     <div
@@ -41,7 +85,11 @@ export default function SignIn() {
           </p>
         </div>
         {formdata.errors && (
-          <p className="mb-4 rounded-lg border border-red-500 bg-rose-950/50 px-3 py-2 text-center text-sm font-semibold text-rose-200">
+          <p
+            key={formdata.errors}
+            className="error-message rounded-lg border border-red-500 bg-rose-950/50 px-2 py-2 text-center text-sm font-semibold text-rose-200"
+            role="alert"
+          >
             {formdata.errors}
           </p>
         )}
@@ -62,7 +110,7 @@ export default function SignIn() {
                 placeholder="example@mail.com"
                 value={formdata.email}
                 onChange={(e) =>
-                  setformdata({ ...formdata, email: e.target.value })
+                  setformdata({ ...formdata, email: e.target.value,  errors: "", })
                 }
               />
             </div>
@@ -92,7 +140,7 @@ export default function SignIn() {
                 placeholder="Enter your password"
                 value={formdata.password}
                 onChange={(e) =>
-                  setformdata({ ...formdata, password: e.target.value })
+                  setformdata({ ...formdata, password: e.target.value, errors: "" })
                 }
               />
             </div>
@@ -113,7 +161,12 @@ export default function SignIn() {
 
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-500 py-3 font-semibold text-white shadow-lg shadow-violet-950/40 transition hover:bg-blue-300"
+            disabled={isLoading}
+            className={`w-full rounded-lg py-3  font-semibold transition hover:bg-blue-300  ${
+              isLoading
+                ? "cursor-not-allowed bg-blue-700 text-black"
+                : "bg-blue-500 from-cyan-400 to-violet-500 text-white shadow-lg shadow-violet-950/40 hover:from-cyan-300 hover:to-violet-400"
+            }`}
           >
             Sign In
           </button>
@@ -121,14 +174,7 @@ export default function SignIn() {
 
         <p className="mt-6 text-center text-sm text-indigo-100/70">
           Don&apos;t have an account?{" "}
-          <Link
-            to="/register"
-            className={`font-semibold text-cyan-300 transition hover:text-cyan-200  ${
-              isLoading ?"cursor-not-allowed text-cyan-950 "
-              :
-              "bg-blue-500 from-cyan-400 to-violet-500 text-white shadow-lg shadow-violet-950/40 hover:from-cyan-300 hover:to-violet-400"
-            }`}
-          >
+          <Link className="text-cyan-400" to="/register">
             Sign Up
           </Link>
         </p>

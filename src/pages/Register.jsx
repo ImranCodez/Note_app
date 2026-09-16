@@ -110,7 +110,7 @@ export default function Register() {
 
         {/* Error */}
         {data.errors && (
-          <p className="mb-4 rounded-lg border border-red-500 bg-rose-950/50 px-3 py-2 text-center text-sm font-semibold text-rose-200">
+          <p className=" rounded-lg border transition border-red-500 bg-rose-950/50 px-3 py-2 text-center text-sm font-semibold text-rose-200">
             {data.errors}
           </p>
         )}
