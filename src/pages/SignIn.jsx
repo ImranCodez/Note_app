@@ -24,8 +24,8 @@ export default function SignIn() {
         ...prev,
         errors: "enter your password",
       }));
-    setIsLoading(true);
-    setformdata((prev) => ({ ...prev, errors: "" }));
+      setformdata((prev) => ({ ...prev, errors: "" }));
+      setIsLoading(true);
     setformdata({
       email: "",
       password: "",
@@ -61,7 +61,7 @@ export default function SignIn() {
         }
 
         const errorMessage = error.message;
-        console.log(errorMessage)
+   
       });
   };
   console.log(formdata);
