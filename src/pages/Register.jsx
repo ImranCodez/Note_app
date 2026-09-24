@@ -15,7 +15,7 @@ import {
 } from "firebase/auth";
 import { toast } from "react-toastify";
 import firebg from "../assets/firebg.jpg";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
   const auth = getAuth();
@@ -29,6 +29,8 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const isInvalid =
     !data.name || !data.email || !data.password || !data.confirmPassword;
@@ -65,7 +67,14 @@ export default function Register() {
       });
       await sendEmailVerification(userCredential.user);
 
-      toast.success("OTP sent to your email", { autoClose: 3000 });
+      toast.success("OTP sent to your email", {
+        autoClose: 3000,
+      });
+
+      setTimeout(() => {
+        navigate("/signin");
+      }, 3500);
+
       setData({
         name: "",
         email: "",
@@ -127,7 +136,7 @@ export default function Register() {
             <input
               type="text"
               className="w-full bg-transparent text-white outline-none placeholder:text-indigo-100/45"
-              placeholder="John Doe"
+              placeholder="Enter Your name"
               value={data.name}
               onChange={(e) =>
                 setData((prev) => ({
@@ -258,7 +267,12 @@ export default function Register() {
         </button>
 
         <div className="text-center mt-1.5">
-          <p>Already have an account? <span className="text-cyan-300 text-[14px]"><Link to="/signin">Sign In</Link></span></p>
+          <p>
+            Already have an account?{" "}
+            <span className="text-cyan-300 text-[14px]">
+              <Link to="/signin">Sign In</Link>
+            </span>
+          </p>
         </div>
       </div>
     </div>
