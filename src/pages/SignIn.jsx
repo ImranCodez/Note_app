@@ -61,6 +61,7 @@ export default function SignIn() {
         }
 
         const errorMessage = error.message;
+        console.log(errorMessage)
    
       });
   };
